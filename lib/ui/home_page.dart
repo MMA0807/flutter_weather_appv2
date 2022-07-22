@@ -1,13 +1,12 @@
-import 'dart:convert';
 import 'dart:ui';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_weather_app_v2/components/weather_item.dart';
 import 'package:flutter_weather_app_v2/constants.dart';
 import 'package:flutter_weather_app_v2/ui/detail_page.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -22,7 +21,9 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _cityController = TextEditingController();
   final Constants _constants = Constants();
 
-  static String API_KEY = ''; //Paste Your API Here
+  final Dio _dio = Dio();
+
+  static const String _apiKey = '6c2b96fa31ae43b2b10121727222207'; //Paste Your API Here
 
   String location = 'London'; //Default location
   String weatherIcon = 'heavycloud.png';
@@ -36,19 +37,19 @@ class _HomePageState extends State<HomePage> {
   List dailyWeatherForecast = [];
 
   String currentWeatherStatus = '';
-
+  String weatherApi = "https://api.weatherapi.com/v1/forecast.json?key=" +
+      _apiKey;
   //API Call
   String searchWeatherAPI = "https://api.weatherapi.com/v1/forecast.json?key=" +
-      API_KEY +
+      _apiKey +
       "&days=7&q=";
 
   void fetchWeatherData(String searchText) async {
     try {
-      var searchResult =
-          await http.get(Uri.parse(searchWeatherAPI + searchText));
 
-      final weatherData = Map<String, dynamic>.from(
-          json.decode(searchResult.body) ?? 'No data');
+      var response = await _dio.get(weatherApi, queryParameters: {'days': '7', 'q': searchText});
+
+      final weatherData = response.data;
 
       var locationData = weatherData["location"];
 
@@ -64,8 +65,7 @@ class _HomePageState extends State<HomePage> {
 
         //updateWeather
         currentWeatherStatus = currentWeather["condition"]["text"];
-        weatherIcon =
-            currentWeatherStatus.replaceAll(' ', '').toLowerCase() + ".png";
+        weatherIcon = currentWeatherStatus.replaceAll(' ', '').toLowerCase() + ".png";
         temperature = currentWeather["temp_c"].toInt();
         windSpeed = currentWeather["wind_kph"].toInt();
         humidity = currentWeather["humidity"].toInt();
@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
         //Forecast data
         dailyWeatherForecast = weatherData["forecast"]["forecastday"];
         hourlyWeatherForecast = dailyWeatherForecast[0]["hour"];
-        print(dailyWeatherForecast);
+        // print(dailyWeatherForecast);
       });
     } catch (e) {
       //debugPrint(e);
