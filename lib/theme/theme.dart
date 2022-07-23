@@ -4,6 +4,7 @@ import 'package:flutter_weather_app_v2/theme/theme_preferences.dart';
 class ThemeModel with ChangeNotifier {
   bool _isDark = false;
   ThemePreferences _preferences = ThemePreferences();
+
   bool get isDark => _isDark;
 
   ThemeModel() {
@@ -22,5 +23,4 @@ class ThemeModel with ChangeNotifier {
     _isDark = await _preferences.getTheme();
     notifyListeners();
   }
-
 }

@@ -124,16 +124,17 @@ class _DetailPageState extends State<DetailPage> {
                             width: 150,
                           ),
                           Positioned(
-                              top: 150,
-                              left: 30,
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 10.0),
-                                child: Text(
-                                  getForecastWeather(0)["weatherName"],
-                                  style: const TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                ),
-                              )),
+                            top: 150,
+                            left: 30,
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 10.0),
+                              child: Text(
+                                getForecastWeather(0)["weatherName"],
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 20),
+                              ),
+                            ),
+                          ),
                           Positioned(
                             bottom: 20,
                             left: 20,
@@ -243,7 +244,7 @@ class _DetailPageState extends State<DetailPage> {
                                                         ),
                                                       ),
                                                       Text(
-                                                        'o',
+                                                        '°',
                                                         style: TextStyle(
                                                             color: _constants
                                                                 .greyColor,
@@ -273,7 +274,7 @@ class _DetailPageState extends State<DetailPage> {
                                                         ),
                                                       ),
                                                       Text(
-                                                        'o',
+                                                        '°',
                                                         style: TextStyle(
                                                             color: _constants
                                                                 .blackColor,
@@ -391,7 +392,7 @@ class _DetailPageState extends State<DetailPage> {
                                                         ),
                                                       ),
                                                       Text(
-                                                        'o',
+                                                        '°',
                                                         style: TextStyle(
                                                             color: _constants
                                                                 .greyColor,
@@ -421,7 +422,7 @@ class _DetailPageState extends State<DetailPage> {
                                                         ),
                                                       ),
                                                       Text(
-                                                        'o',
+                                                        '°',
                                                         style: TextStyle(
                                                             color: _constants
                                                                 .blackColor,
@@ -539,7 +540,7 @@ class _DetailPageState extends State<DetailPage> {
                                                         ),
                                                       ),
                                                       Text(
-                                                        'o',
+                                                        '°',
                                                         style: TextStyle(
                                                             color: _constants
                                                                 .greyColor,
@@ -569,7 +570,7 @@ class _DetailPageState extends State<DetailPage> {
                                                         ),
                                                       ),
                                                       Text(
-                                                        'o',
+                                                        '°',
                                                         style: TextStyle(
                                                             color: _constants
                                                                 .blackColor,

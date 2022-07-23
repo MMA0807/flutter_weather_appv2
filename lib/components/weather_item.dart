@@ -30,7 +30,7 @@ class WeatherItem extends StatelessWidget {
         Text(
           value.toString() + unit, style: const TextStyle(
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          // color: Colors.white,
         ),
         ),
       ],
