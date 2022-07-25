@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_weather_app_v2/colors.dart';
@@ -9,7 +10,6 @@ import 'package:flutter_weather_app_v2/constants.dart';
 import 'package:flutter_weather_app_v2/theme/theme.dart';
 import 'package:flutter_weather_app_v2/ui/detail_page.dart';
 
-import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
@@ -45,9 +45,9 @@ class _HomePageState extends State<HomePage> {
       "https://api.weatherapi.com/v1/forecast.json?key=" + _apiKey;
 
   //API Call
-  String searchWeatherAPI = "https://api.weatherapi.com/v1/forecast.json?key=" +
-      _apiKey +
-      "&days=7&q=";
+  // String searchWeatherAPI = "https://api.weatherapi.com/v1/forecast.json?key=" +
+  //     _apiKey +
+  //     "&days=7&q=";
 
   void fetchWeatherData(String searchText) async {
     try {
@@ -117,18 +117,15 @@ class _HomePageState extends State<HomePage> {
 
     return Consumer<ThemeModel>(
         builder: (context, ThemeModel themeNotifier, child) {
+          final currentTheme = themeNotifier.currentTheme();
       return Scaffold(
         appBar: AppBar(
-          title: Text(themeNotifier.isDark ? 'Dark Mode' : 'Light Mode'),
+          title: Text(currentTheme['titleText']),
           actions: [
             IconButton(
-              icon: Icon(themeNotifier.isDark
-                  ? Icons.nightlight_round
-                  : Icons.wb_sunny),
+              icon: Icon(currentTheme['icon']),
               onPressed: () {
-                themeNotifier.isDark
-                    ? themeNotifier.isDark = false
-                    : themeNotifier.isDark = true;
+                themeNotifier.toggleTheme();
               },
             )
           ],
@@ -147,14 +144,10 @@ class _HomePageState extends State<HomePage> {
                       const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                   height: size.height * .7,
                   decoration: BoxDecoration(
-                    gradient: themeNotifier.isDark
-                        ? AppColors.linearGradientGreyBlue
-                        : AppColors.linearGradientBlue,
+                    gradient: currentTheme['gradient'],
                     boxShadow: [
                       BoxShadow(
-                        color: themeNotifier.isDark
-                            ? AppColors.blueGrey.withOpacity(.5)
-                            : AppColors.primaryColor.withOpacity(.5),
+                        color: currentTheme['shadowColor'],
                         spreadRadius: 5,
                         blurRadius: 7,
                         offset: const Offset(0, 3),
@@ -173,9 +166,7 @@ class _HomePageState extends State<HomePage> {
                             "assets/menu.png",
                             width: 40,
                             height: 40,
-                            color: themeNotifier.isDark
-                                ? AppColors.black.withOpacity(.5)
-                                : AppColors.white.withOpacity(.5),
+                            color: currentTheme['colorOfImage'],
                           ),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -183,9 +174,7 @@ class _HomePageState extends State<HomePage> {
                               Image.asset(
                                 "assets/pin.png",
                                 width: 20,
-                                color: themeNotifier.isDark
-                                    ? AppColors.black.withOpacity(.5)
-                                    : AppColors.white.withOpacity(.5),
+                                color: currentTheme['colorOfImage'],
                               ),
                               const SizedBox(
                                 width: 2,
@@ -216,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                               child: Column(
                                                 children: [
-                                                  SizedBox(
+                                                  const SizedBox(
                                                     width: 70,
                                                     child: Divider(
                                                       thickness: 3.5,
@@ -235,7 +224,7 @@ class _HomePageState extends State<HomePage> {
                                                     controller: _cityController,
                                                     autofocus: true,
                                                     decoration: InputDecoration(
-                                                        prefixIcon: Icon(
+                                                        prefixIcon: const Icon(
                                                           Icons.search,
                                                           // color: _constants
                                                           //     .primaryColor,
@@ -245,7 +234,7 @@ class _HomePageState extends State<HomePage> {
                                                           onTap: () =>
                                                               _cityController
                                                                   .clear(),
-                                                          child: Icon(
+                                                          child: const Icon(
                                                             Icons.close,
                                                             // color: _constants
                                                             //     .primaryColor,
@@ -256,7 +245,7 @@ class _HomePageState extends State<HomePage> {
                                                         focusedBorder:
                                                             OutlineInputBorder(
                                                           borderSide:
-                                                              BorderSide(
+                                                              const BorderSide(
                                                             // color: _constants
                                                             //     .primaryColor,
                                                           ),
@@ -289,7 +278,14 @@ class _HomePageState extends State<HomePage> {
                       ),
                       SizedBox(
                         height: 160,
-                        child: Image.asset("assets/" + weatherIcon),
+                        child: Image.asset(
+                          "assets/" + weatherIcon,
+                            errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                              return Image.asset(
+                                  "assets/cloudy.png",
+                               );
+                           },
+                        ),
                       ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,19 +295,17 @@ class _HomePageState extends State<HomePage> {
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               temperature.toString(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 80,
                                 fontWeight: FontWeight.bold,
-                                // foreground: Paint()..shader = _constants.shader,
                               ),
                             ),
                           ),
-                          Text(
+                          const Text(
                             'o',
                             style: TextStyle(
                               fontSize: 40,
                               fontWeight: FontWeight.bold,
-                              // foreground: Paint()..shader = _constants.shader,
                             ),
                           ),
                         ],
@@ -372,13 +366,13 @@ class _HomePageState extends State<HomePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
-                            'Today',
+                            "home.today",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: AppColors.black,
                               fontSize: 20.0,
                             ),
-                          ),
+                          ).tr(),
                           GestureDetector(
                             onTap: () => Navigator.push(
                                 context,
@@ -388,14 +382,14 @@ class _HomePageState extends State<HomePage> {
                                               dailyWeatherForecast,
                                         ))),
                             //this will open forecast screen
-                            child: Text(
-                              'Forecasts',
+                            child: const Text(
+                              'home.forecast',
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
                                 color: AppColors.black,
                               ),
-                            ),
+                            ).tr(),
                           ),
                         ],
                       ),
