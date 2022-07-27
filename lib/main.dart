@@ -1,42 +1,31 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_weather_app_v2/theme/theme.dart';
-import 'package:flutter_weather_app_v2/ui/home_page.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_weather_app_v2/weather_bloc_observer.dart';
+import 'package:flutter_weather_app_v2/weather_repository/weather_repository.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
+
+import 'my_app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  
-  runApp(EasyLocalization(
-      supportedLocales: const [Locale('ru')],
-      path: 'assets/translations',
-      child: const MyApp(),
-  ));
-}
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final storage = await HydratedStorage.build(
+      storageDirectory: kIsWeb
+          ? HydratedStorage.webStorageDirectory
+          : await getTemporaryDirectory());
 
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ThemeModel(),
-      child: Consumer<ThemeModel>(
-        builder: (context, ThemeModel themeNotifier, child) {
-          final currentTheme = themeNotifier.currentTheme()['theme'];
-          return MaterialApp(
-            localizationsDelegates: context.localizationDelegates,
-            supportedLocales: context.supportedLocales,
-            locale: context.locale,
-            title: 'Flutter Demo',
-            theme: currentTheme,
-            home: const HomePage(),
-            debugShowCheckedModeBanner: false,
-          );
-        },
+  HydratedBlocOverrides.runZoned(
+    () => runApp(
+      EasyLocalization(
+        supportedLocales: const [Locale('ru')],
+        path: 'assets/translations',
+        child: MyApp(weatherRepository: WeatherRepository()),
       ),
-    );
-  }
+    ),
+    blocObserver: WeatherBlocObserver(),
+    storage: storage,
+  );
 }
